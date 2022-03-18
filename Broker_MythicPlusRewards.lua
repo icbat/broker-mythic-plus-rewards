@@ -2,12 +2,47 @@
 --- View Code
 -------------
 
+local _, lowest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(1)
+local highest_vault, highest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(15)
+local green_cutoff = (highest_run - lowest_run) / 2 + lowest_run
+local purple_cutoff = (highest_vault - highest_run) * 2 / 3 + highest_run
+
+print(green_cutoff, purple_cutoff)
+
+local function color_cell(self, col, level)
+
+    if level >= purple_cutoff then
+        self:SetCellTextColor(self:GetLineCount(), col, 1, 0.5, 0, 1)
+        return
+    end
+
+    if level < purple_cutoff and level > highest_run then
+        self:SetCellTextColor(self:GetLineCount(), col, 0.64, 0.21, 0.93, 1)
+        return
+    end
+
+
+    if level == highest_run then
+        self:SetCellTextColor(self:GetLineCount(), col, 0.00, 0.44, 0.87, 1)
+        return
+    end
+
+    if level > green_cutoff then
+        self:SetCellTextColor(self:GetLineCount(), col, 0.12, 1, 0, 1)
+        return
+    end
+
+end
+
 local function build_tooltip(self)
-    self:AddHeader("Key", "End of run", "Weekly Vault")
+    self:AddHeader("Key", "Run", "Vault")
     self:AddSeparator()
+
     for key_level = 1, 15, 1 do
         local vault_level, run_level = C_MythicPlus.GetRewardLevelForDifficultyLevel(key_level)
         self:AddLine(key_level, run_level, vault_level)
+        color_cell(self, 2, run_level)
+        color_cell(self, 3, vault_level)
     end
 end
 
