@@ -1,0 +1,14 @@
+## Interface: 90200
+## Title: Broker: Mythic Plus Rewards
+## Notes: Show what item level drops from what keys so you can stop alt-tabbing to WoWHead
+## Author: @icbat
+## Version: 1
+
+## Dependencies
+libs/LibStub.lua
+libs/CallbackHandler-1.0.lua
+libs/LibDataBroker-1.1.lua
+libs/LibQTip-1.0.lua
+
+## This addon
+Broker_MythicPlusRewards.lua
