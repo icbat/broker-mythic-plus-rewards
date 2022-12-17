@@ -5,17 +5,46 @@
 local MYTHIC_PLUS_MAX_KEY = 20
 local MYTHIC_PLUS_MIN_KEY = 2
 
+local VAULT_CUTOFF_SLOT_1 = 1
+local VAULT_CUTOFF_SLOT_2 = 4
+local VAULT_CUTOFF_SLOT_3 = 8
+
+local vault_reward_keylevel_slot_1 = 0
+local vault_reward_keylevel_slot_2 = 0
+local vault_reward_keylevel_slot_3 = 0
+
 -- these are all defaulted and set after world load to avoid timing issues
 local green_cutoff = 99999
 local purple_cutoff = 99999
 local highest_run = 0
 local highest_vault = 0
 
+DevTools_Dump(C_MythicPlus)
+
 local function figure_out_colors()
     local lowest_vault, lowest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(MYTHIC_PLUS_MIN_KEY)
     highest_vault, highest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(MYTHIC_PLUS_MAX_KEY)
     green_cutoff = (highest_run - lowest_run) / 2 + lowest_run
     purple_cutoff = (highest_vault - highest_run) * 2 / 3 + highest_run
+end
+
+local function figure_out_highest_weekly()
+    -- if only this worked
+    -- return C_MythicPlus.GetWeeklyChestRewardLevel()
+
+    local levels = {}
+
+    for index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
+        local map_id = map_info["mapChallengeModeID"]
+        local _seconds, level = C_MythicPlus.GetWeeklyBestForMap(map_id)
+        levels[index] = level
+    end
+
+    table.sort(levels)
+
+    vault_reward_keylevel_slot_1 = levels[#levels - VAULT_CUTOFF_SLOT_1 + 1]
+    vault_reward_keylevel_slot_2 = levels[#levels - VAULT_CUTOFF_SLOT_2 + 1]
+    vault_reward_keylevel_slot_3 = levels[#levels - VAULT_CUTOFF_SLOT_3 + 1]
 end
 
 local function color_cell(self, col, level)
@@ -58,7 +87,19 @@ local function build_tooltip(self)
         color_cell(self, 3, vault_level)
 
         if my_key_level == key_level then
-            self:SetCellColor(self:GetLineCount(), 1, 0, 1, 0, 0.5)
+            self:SetCellColor(self:GetLineCount(), 2, 0, 1, 0, 0.5)
+        end
+
+        if vault_reward_keylevel_slot_1 == key_level then
+            self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)
+        end
+
+        if vault_reward_keylevel_slot_2 == key_level then
+            self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)
+        end
+
+        if vault_reward_keylevel_slot_3 == key_level then
+            self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)
         end
     end
     if  my_key_level > 15 then
@@ -96,6 +137,7 @@ local function anchor_OnEnter(self)
     tooltip:SetAutoHideDelay(.1, self)
 
     figure_out_colors()
+    figure_out_highest_weekly()
     build_tooltip(tooltip)
 
     tooltip:SmartAnchorTo(self)
