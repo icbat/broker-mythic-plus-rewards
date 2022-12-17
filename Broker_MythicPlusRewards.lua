@@ -5,21 +5,13 @@
 local MYTHIC_PLUS_MAX_KEY = 20
 local MYTHIC_PLUS_MIN_KEY = 2
 
-local VAULT_CUTOFF_SLOT_1 = 1
-local VAULT_CUTOFF_SLOT_2 = 4
-local VAULT_CUTOFF_SLOT_3 = 8
-
 local vault_reward_keylevel_slot_1 = 0
-local vault_reward_keylevel_slot_2 = 0
-local vault_reward_keylevel_slot_3 = 0
 
 -- these are all defaulted and set after world load to avoid timing issues
 local green_cutoff = 99999
 local purple_cutoff = 99999
 local highest_run = 0
 local highest_vault = 0
-
-DevTools_Dump(C_MythicPlus)
 
 local function figure_out_colors()
     local lowest_vault, lowest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(MYTHIC_PLUS_MIN_KEY)
@@ -42,9 +34,7 @@ local function figure_out_highest_weekly()
 
     table.sort(levels)
 
-    vault_reward_keylevel_slot_1 = levels[#levels - VAULT_CUTOFF_SLOT_1 + 1]
-    vault_reward_keylevel_slot_2 = levels[#levels - VAULT_CUTOFF_SLOT_2 + 1]
-    vault_reward_keylevel_slot_3 = levels[#levels - VAULT_CUTOFF_SLOT_3 + 1]
+    vault_reward_keylevel_slot_1 = levels[#levels]
 end
 
 local function color_cell(self, col, level)
@@ -91,14 +81,6 @@ local function build_tooltip(self)
         end
 
         if vault_reward_keylevel_slot_1 == key_level then
-            self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)
-        end
-
-        if vault_reward_keylevel_slot_2 == key_level then
-            self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)
-        end
-
-        if vault_reward_keylevel_slot_3 == key_level then
             self:SetCellColor(self:GetLineCount(), 3, 0, 1, 0, 0.5)
         end
     end

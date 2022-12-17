@@ -12,8 +12,8 @@ jobs:
   build:
     uses: icbat/wow-addon-github-workflow/.github/workflows/release-wowi.yml@main
     with:
-      addon_name: Broker_MythicPlusScores
-      addon_bundled_files: libs/ Broker_MythicPlusScores.lua LICENSE README.md
-      wowi_id: 26214
+      addon_name: Broker_MythicPlusRewards
+      addon_bundled_files: libs/ Broker_MythicPlusRewards.lua LICENSE README.md
+      wowi_id: 26506
     secrets:
       wowi_api_token: ${{secrets.WOWI_API_TOKEN}}
