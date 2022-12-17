@@ -2,11 +2,21 @@
 --- View Code
 -------------
 
+local MYTHIC_PLUS_MAX_KEY = 20
+local MYTHIC_PLUS_MIN_KEY = 2
+
 -- these are all defaulted and set after world load to avoid timing issues
 local green_cutoff = 99999
 local purple_cutoff = 99999
 local highest_run = 0
 local highest_vault = 0
+
+local function figure_out_colors()
+    local lowest_vault, lowest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(MYTHIC_PLUS_MIN_KEY)
+    highest_vault, highest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(MYTHIC_PLUS_MAX_KEY)
+    green_cutoff = (highest_run - lowest_run) / 2 + lowest_run
+    purple_cutoff = (highest_vault - highest_run) * 2 / 3 + highest_run
+end
 
 local function color_cell(self, col, level)
     if level >= purple_cutoff then
@@ -41,7 +51,7 @@ local function build_tooltip(self)
         my_key_level = 0
     end
 
-    for key_level = 1, 15, 1 do
+    for key_level = MYTHIC_PLUS_MIN_KEY, MYTHIC_PLUS_MAX_KEY do
         local vault_level, run_level = C_MythicPlus.GetRewardLevelForDifficultyLevel(key_level)
         self:AddLine(key_level, run_level, vault_level)
         color_cell(self, 2, run_level)
@@ -85,6 +95,7 @@ local function anchor_OnEnter(self)
     tooltip.OnLeave = OnLeave
     tooltip:SetAutoHideDelay(.1, self)
 
+    figure_out_colors()
     build_tooltip(tooltip)
 
     tooltip:SmartAnchorTo(self)
@@ -99,16 +110,3 @@ end
 --- Nothing to do. Needs to be defined for some display addons apparently
 function dataobj:OnLeave()
 end
-
---- there's some slight timing issues where the C_MythicPlus functions might return nil, so this is to safely wait for those to load first
-local function figure_out_colors()
-    local _, lowest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(1)
-    highest_vault, highest_run = C_MythicPlus.GetRewardLevelForDifficultyLevel(15)
-    green_cutoff = (highest_run - lowest_run) / 2 + lowest_run
-    purple_cutoff = (highest_vault - highest_run) * 2 / 3 + highest_run
-end
-
--- invisible frame for updating/hooking events
-local f = CreateFrame("frame")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:SetScript("OnEvent", figure_out_colors)
