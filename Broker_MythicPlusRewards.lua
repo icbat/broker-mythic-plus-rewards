@@ -24,17 +24,20 @@ local function figure_out_highest_weekly()
     -- if only this worked
     -- return C_MythicPlus.GetWeeklyChestRewardLevel()
 
-    local levels = {}
+    -- local levels = {}
 
-    for index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
-        local map_id = map_info["mapChallengeModeID"]
-        local _seconds, level = C_MythicPlus.GetWeeklyBestForMap(map_id)
-        levels[index] = level
-    end
+    -- for index, map_info in pairs(C_ChallengeMode.GetMapScoreInfo()) do
+    --     local map_id = map_info["mapChallengeModeID"]
+    --     local _seconds, level = C_MythicPlus.GetWeeklyBestForMap(map_id)
+    --     levels[index] = level
+    --     -- DevTools_Debug(map_id)
+    --     -- DevTools_Debug(C_MythicPlus.GetWeeklyBestForMap(map_id))
+    -- end
 
-    table.sort(levels)
+    -- table.sort(levels)
 
-    vault_reward_keylevel_slot_1 = levels[#levels]
+    -- vault_reward_keylevel_slot_1 = levels[#levels]
+    vault_reward_keylevel_slot_1 = 1
 end
 
 local function color_cell(self, col, level)

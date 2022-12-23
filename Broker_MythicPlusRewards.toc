@@ -2,7 +2,7 @@
 ## Title: Broker: Mythic Plus Rewards
 ## Notes: Show what item level drops from what keys so you can stop alt-tabbing to WoWHead
 ## Author: @icbat
-## Version: 2
+## Version: 3
 
 ## Dependencies
 libs/LibStub.lua
